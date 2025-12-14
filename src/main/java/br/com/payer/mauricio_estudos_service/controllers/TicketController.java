@@ -29,4 +29,14 @@ public class TicketController {
     public Mono<Ticket> getById(@PathVariable String id) {
         return ticketService.getById(id);
     }
+
+    @PutMapping("/{id}")
+    public Mono<Ticket> update(@PathVariable String id, @RequestBody Ticket ticket) {
+        return ticketService.update(id, ticket);
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> delete(@PathVariable String id) {
+        return ticketService.delete(id);
+    }
 }

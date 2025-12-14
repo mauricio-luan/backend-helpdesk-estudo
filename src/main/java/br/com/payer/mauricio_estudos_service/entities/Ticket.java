@@ -12,9 +12,10 @@ import java.time.LocalDateTime;
 public class Ticket {
     @MongoId
     private String id;
+    private Long protocol;
     private String title;
     private String content;
-    private LocalDateTime timestamp;
+    private LocalDateTime createdDate;
     private Status status;
     private String whoCreated;
 }
