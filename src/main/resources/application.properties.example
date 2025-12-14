@@ -1,0 +1,2 @@
+spring.application.name=mauricio-estudos-service
+spring.data.mongodb.uri=
