@@ -30,6 +30,11 @@ public class TicketController {
         return ticketService.getById(id);
     }
 
+    @GetMapping("/protocol/{protocol}")
+    public Mono<Ticket> getByProtocol(@PathVariable Long protocol) {
+        return  ticketService.getTicketByProtocol(protocol);
+    }
+
     @PutMapping("/{id}")
     public Mono<Ticket> update(@PathVariable String id, @RequestBody Ticket ticket) {
         return ticketService.update(id, ticket);

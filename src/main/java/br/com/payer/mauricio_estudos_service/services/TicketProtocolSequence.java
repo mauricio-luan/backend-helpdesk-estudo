@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class TicketProtocolSequenceGenerator {
+public class TicketProtocolSequence {
     private final ReactiveMongoOperations mongoOperations;
 
     public Mono<Long> generateNextProtocol(String seqName) {

@@ -1,5 +1,6 @@
 package br.com.payer.mauricio_estudos_service.entities;
 
+import br.com.payer.mauricio_estudos_service.enums.Priority;
 import br.com.payer.mauricio_estudos_service.enums.Status;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,5 +18,7 @@ public class Ticket {
     private String content;
     private LocalDateTime createdDate;
     private Status status;
-    private String whoCreated;
+    private Priority priority;
+    private String createdByUserId;
+    private String createdByUserEmail;
 }

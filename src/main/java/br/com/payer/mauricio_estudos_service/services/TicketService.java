@@ -1,7 +1,7 @@
 package br.com.payer.mauricio_estudos_service.services;
 
 import br.com.payer.mauricio_estudos_service.entities.Ticket;
-import br.com.payer.mauricio_estudos_service.entities.TicketProtocol;
+import br.com.payer.mauricio_estudos_service.enums.Priority;
 import br.com.payer.mauricio_estudos_service.enums.Status;
 import br.com.payer.mauricio_estudos_service.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,32 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class TicketService {
     private final TicketRepository ticketRepository;
-    private final TicketProtocolSequenceGenerator ticketProtocolSequenceGenerator;
+    private final TicketProtocolSequence ticketProtocolSequence;
 
     public Mono<Ticket> save(Ticket ticket) {
-        return ticketProtocolSequenceGenerator.generateNextProtocol("ticket_protocol")
+        return ticketProtocolSequence.generateNextProtocol("ticket_protocol")
                 .flatMap(protocol -> {
-                    ticket.setProtocol(protocol);
-                    ticket.setCreatedDate(LocalDateTime.now());
-
                     if (ticket.getStatus() == null) {
                         ticket.setStatus(Status.OPEN);
                     }
+
+                    if (ticket.getPriority() == null) {
+                        ticket.setPriority(Priority.BAIXA);
+                    }
+
+                    if (ticket.getTitle() == null ||
+                            ticket.getContent() == null ||
+                            ticket.getCreatedByUserId() == null ||
+                            ticket.getCreatedByUserEmail() == null
+                    ) {
+                        throw new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Preencha os campos obrigatorios"
+                        );
+                    }
+
+                    ticket.setProtocol(protocol);
+                    ticket.setCreatedDate(LocalDateTime.now());
 
                     return ticketRepository.save(ticket);
                 });
@@ -43,6 +58,14 @@ public class TicketService {
                         HttpStatus.NOT_FOUND,
                         "Ticket não encontrado")
                 ));
+    }
+
+    public Mono<Ticket> getTicketByProtocol(Long protocol) {
+        return ticketRepository.findByProtocol(protocol)
+                .switchIfEmpty(Mono.error(new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Protocolo não encontrado"
+                )));
     }
 
     public Mono<Ticket> update(String id, Ticket ticket) {
